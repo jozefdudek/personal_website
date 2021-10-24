@@ -51,11 +51,12 @@ hr
     width: 100%;
 }
 
-img
+/*img
 {
     border: 0px;
     padding: 10px;
 }
+*/
 
 img.results
 {
@@ -222,7 +223,7 @@ body {
   color:#333;
 }
 
-img {border:0px solid #ddd;padding:3px;}
+img {border:0px solid #ddd;padding:30px;}
 img.no-border {border:0;padding:0;}
 /*end test*/
 
