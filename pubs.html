@@ -29,6 +29,8 @@ var HttpClient = function() {
 
 for(year = 2021; year >= 2003; year--){
 
+ if (year === 2007) { continue; }
+
  writeString = "</br><h2>~~ ";
  writeString = writeString.concat( year.toString() );
  writeString = writeString.concat(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</h2></br>");
