@@ -71,9 +71,9 @@ for (var pubNum = 0; pubNum < list.length; pubNum++) {
 //writeString = writeString.concat( JSON.stringify(list[pubNum]["id"], null, 2 ) );
 
 // *** TITLE ***
-writeString = writeString.concat("<b>");
+writeString = writeString.concat("");
 writeString = writeString.concat( JSON.stringify( list[pubNum]["metadata"]["titles"][0]["title"],null,2));
-writeString = writeString.concat("</b></br>");
+writeString = writeString.concat("</br>");
 
 writeString = writeString.replace(/\\\\/g,"\\"); //replace double backslash with single backslash
 writeString = writeString.replace(/\\{o}/g,"&ouml;"); //fix the Mobius problem
