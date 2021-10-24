@@ -260,6 +260,9 @@ tr.highlights:nth-child(even) {
 }
 /* end -- alternating greys style table -- */
 
+
+
+
 /* -- vertical alternating greys -- */
 table.vert {
   border-collapse: separate;
