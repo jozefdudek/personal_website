@@ -236,7 +236,7 @@ th.people
 /* -- horizontal alternating greys style table -- */
 table.highlights {
   border-collapse: separate;
-  border-spacing: 0;
+  border-spacing: 5px;
   border: none;
 }
 th.highlights, td.highlights {
