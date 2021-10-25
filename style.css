@@ -22,7 +22,7 @@ html {
 body {
   margin: 0;
   padding:0px 64px 64px 36px;
-  background:#faf3e6;
+  background:#f7f2e9;
   font-size:0.75em;
   text-align:left;
   line-height:1.5;
@@ -253,10 +253,10 @@ th.highlights {
   text-align: left;
 }
 tr.highlights:nth-child(odd) {
-  background-color:#eee;
+  background-color:#fcfaf5;
 }
 tr.highlights:nth-child(even) {
-  background-color:#fafafa;
+  background-color:#f7faf5;
 }
 /* end -- alternating greys style table -- */
 
