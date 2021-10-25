@@ -256,7 +256,7 @@ tr.highlights:nth-child(odd) {
   background-color:#fcfaf5;
 }
 tr.highlights:nth-child(even) {
-  background-color:#f7faf5;
+  background-color:#f7f2e9;
 }
 /* end -- alternating greys style table -- */
 
