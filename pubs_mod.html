@@ -1,0 +1,174 @@
+---
+layout: default
+---
+
+<a id="publications"></a>
+<h1>Journal Publications</h1>
+
+<div>
+  <p id="demo"></p></br>
+</div>
+
+<script>
+(() => {
+  const START_YEAR = 2025;
+  const END_YEAR = 2003;
+  const SKIPPED_YEARS = new Set([2007]);
+  const OUTPUT_ID = "demo";
+
+  function getSync(url) {
+    const request = new XMLHttpRequest();
+    request.open("GET", url, false);
+    request.send(null);
+
+    if (request.status !== 200) {
+      throw new Error(`Request failed (${request.status}) for ${url}`);
+    }
+
+    return request.responseText;
+  }
+
+  function buildInspireUrl(year) {
+    let url = "https://inspirehep.net/api/literature?";
+    url += "fields=authors,titles,publication_info,dois";
+    url += "&q=find+(+a+j.j.dudek.2)";
+    url += "+and+tc+p+and+jy+";
+    url += String(year);
+    return url;
+  }
+
+  function toJsonText(value) {
+    return JSON.stringify(value, null, 2);
+  }
+
+  function normalizeEscapes(text) {
+    return text
+      .replace(/\\\\/g, "\\")
+      .replace(/\\{o}/g, "&ouml;");
+  }
+
+  function stripQuotes(text) {
+    return text.replace(/"/g, "");
+  }
+
+  function formatAuthors(authors) {
+    const useEtAl = authors.length >= 9;
+    const visibleAuthors = useEtAl ? authors.slice(0, 1) : authors;
+
+    let html = "<i>";
+
+    for (let i = 0; i < visibleAuthors.length; i += 1) {
+      const author = visibleAuthors[i];
+      html += `${toJsonText(author.first_name)} ${toJsonText(author.last_name)}`;
+
+      if (visibleAuthors.length > 1) {
+        if (i < visibleAuthors.length - 2) {
+          html += ", ";
+        }
+        if (i === visibleAuthors.length - 2) {
+          html += " and ";
+        }
+      }
+    }
+
+    if (useEtAl) {
+      html += " et.al.";
+    }
+
+    html += "</i></br>";
+    return html;
+  }
+
+  function formatJournal(publicationInfo) {
+    let journalString;
+
+    if (Object.prototype.hasOwnProperty.call(publicationInfo, "pubinfo_freetext")) {
+      journalString = toJsonText(publicationInfo.pubinfo_freetext);
+    } else {
+      journalString = toJsonText(publicationInfo.journal_title);
+      journalString += " ";
+      journalString += toJsonText(publicationInfo.journal_volume);
+      journalString += ", ";
+
+      if (Object.prototype.hasOwnProperty.call(publicationInfo, "artid")) {
+        journalString += toJsonText(publicationInfo.artid);
+      } else {
+        if (Object.prototype.hasOwnProperty.call(publicationInfo, "journal_issue")) {
+          journalString += toJsonText(publicationInfo.journal_issue);
+        }
+        journalString += "  ";
+        journalString += toJsonText(publicationInfo.page_start);
+        journalString += "-";
+        journalString += toJsonText(publicationInfo.page_end);
+      }
+
+      journalString += " (";
+      journalString += toJsonText(publicationInfo.year);
+      journalString += ")";
+    }
+
+    return stripQuotes(journalString);
+  }
+
+  function formatJournalLink(metadata) {
+    const journalString = formatJournal(metadata.publication_info[0]);
+
+    if (Object.prototype.hasOwnProperty.call(metadata, "dois")) {
+      let doiString = toJsonText(metadata.dois[0].value);
+      doiString = doiString.replace(/['"]+/g, "");
+
+      let linkString = '<a href="http://dx.doi.org/';
+      linkString += doiString;
+      linkString += '">';
+      linkString += journalString;
+      linkString += "</a>";
+
+      return linkString;
+    }
+
+    return journalString;
+  }
+
+  function appendPublicationHtml(yearHtml, publication) {
+    const { metadata } = publication;
+
+    yearHtml += "&ldquo;";
+    yearHtml += toJsonText(metadata.titles[0].title);
+    yearHtml += "&rdquo;</br>";
+
+    // These operate on the full accumulated string to preserve the original behavior.
+    yearHtml = normalizeEscapes(yearHtml);
+
+    yearHtml += formatAuthors(metadata.authors);
+    yearHtml = stripQuotes(yearHtml);
+
+    yearHtml += formatJournalLink(metadata);
+    yearHtml += "</br></br>";
+
+    return yearHtml;
+  }
+
+  function buildYearHtml(year) {
+    let yearHtml = `</br><h4>~~ ${year} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</h4></br>`;
+
+    const response = getSync(buildInspireUrl(year));
+    const publications = JSON.parse(response).hits.hits;
+
+    for (const publication of publications) {
+      yearHtml = appendPublicationHtml(yearHtml, publication);
+    }
+
+    return yearHtml;
+  }
+
+  const output = document.getElementById(OUTPUT_ID);
+
+  for (let year = START_YEAR; year >= END_YEAR; year -= 1) {
+    if (SKIPPED_YEARS.has(year)) {
+      continue;
+    }
+
+    output.innerHTML += buildYearHtml(year);
+  }
+})();
+</script>
